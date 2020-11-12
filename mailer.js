@@ -10,16 +10,30 @@ let transporter = nodemailer.createTransport({
 });
 
 const sendMail = (data, cb) => {
-    const buildTextTitle = "New safety issue reported: "+data.title+"\n";
+    var mailOptions;
+    if (data.type == "new-issue") {
+        const buildTextTitle = "NEW safety issue reported: "+data.title+"\n";
     const buildTextCategory = "Category: "+data.category+"\n";
     const buildTextPriority = "Priority: "+data.priority+"%\n";
     const buildTextDescription = "Description:"+"\n"+data.description;
-    let mailOptions = {
+    mailOptions = {
         from: process.env.SENDER_USER,
         to: process.env.RECEIVER_USER,
-        subject: 'New safety issue: '+ data.title,
+        subject: 'NEW safety issue: '+ data.title,
         text: buildTextTitle+buildTextCategory+buildTextPriority+buildTextDescription
     };
+    } else if (data.type == "resolve-issue") {
+        const buildTextTitle = "Safety issue: "+data.title+" RESOLVED"+"\n";
+        //const buildTextCategory = "Category: "+data.category+"\n";
+        //const buildTextPriority = "Priority: "+data.priority+"%\n";
+        //const buildTextDescription = "Description:"+"\n"+data.description;
+        mailOptions = {
+            from: process.env.SENDER_USER,
+            to: process.env.RECEIVER_USER,
+            subject: 'Safety issue RESOLVED: '+ data.title,
+            text: buildTextTitle//+buildTextCategory+buildTextPriority+buildTextDescription
+    };
+    }
         
     transporter.sendMail(mailOptions, (err, data) => {
         if(err) {
