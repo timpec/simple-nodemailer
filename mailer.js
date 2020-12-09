@@ -12,9 +12,9 @@ let transporter = nodemailer.createTransport({
 const sendMail = (data, cb) => {
     var mailOptions;
     if (data.type == "new-issue") {
-        const buildTextTitle = "NEW safety issue reported: "+data.title+"\n";
-    const buildTextCategory = "Category: "+data.category+"\n";
-    const buildTextPriority = "Priority: "+data.priority+"%\n";
+        const buildTextTitle = "NEW safety issue reported: "+data.title+"\n\n";
+    const buildTextCategory = "Category: "+data.category+"\n\n";
+    const buildTextPriority = "Priority: "+data.priority+"%\n\n";
     const buildTextDescription = "Description:"+"\n"+data.description;
     mailOptions = {
         from: process.env.SENDER_USER,
@@ -23,7 +23,7 @@ const sendMail = (data, cb) => {
         text: buildTextTitle+buildTextCategory+buildTextPriority+buildTextDescription
     };
     } else if (data.type == "resolve-issue") {
-        const buildTextTitle = "Safety issue: "+data.title+" RESOLVED"+"\n";
+        const buildTextTitle = 'Safety issue "'+data.title+'" status: RESOLVED'+'\n';
         //const buildTextCategory = "Category: "+data.category+"\n";
         //const buildTextPriority = "Priority: "+data.priority+"%\n";
         //const buildTextDescription = "Description:"+"\n"+data.description;
@@ -32,6 +32,14 @@ const sendMail = (data, cb) => {
             to: process.env.RECEIVER_USER,
             subject: 'Safety issue RESOLVED: '+ data.title,
             text: buildTextTitle//+buildTextCategory+buildTextPriority+buildTextDescription
+    };
+    } else if (data.type == "fix-issue") {
+        const buildTextTitle = 'Safety issue "'+data.title+'" status: STARTED'+'\n';
+        mailOptions = {
+            from: process.env.SENDER_USER,
+            to: process.env.RECEIVER_USER,
+            subject: 'Safety issue taken under work: '+ data.title,
+            text: buildTextTitle
     };
     }
         
